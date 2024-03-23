@@ -1,0 +1,33 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { Inter } from "next/font/google";
+import "../globals.css";
+// import { ForkLeft } from "@mui/icons-material";
+import MainContainer from "@/components/layout/MainContainer";
+import RightSideBar from "@/components/layout/RightSideBar";
+import LeftSideBar from "@/components/layout/LeftSideBar";
+import BottomBar from "@/components/layout/BottomBar";
+// import TopBar from "@/components/layout/TopBar";
+
+export const metadata = {
+  title: "Vibe Zone",
+  description: "Next Social Media App",
+};
+
+const inter = Inter({ subsets: ["latin"] });
+
+export default function RootLayout({ children }) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${inter.className} bg-purple-2 text-light-1`}>
+          <main className="flex flex-row">
+            <LeftSideBar />
+            <MainContainer>{children}</MainContainer>
+            <RightSideBar />
+          </main>
+          <BottomBar />
+        </body>
+      </html>
+    </ClerkProvider>
+  );
+}
