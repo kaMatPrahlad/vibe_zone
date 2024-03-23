@@ -1,7 +1,6 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { createOrUpdateUser } from "@/lib/actions/user";
-import { deleteUser } from "@/lib/actions/user";
+import { WebhookEvent } from "@clerk/nextjs/server";
 
 export async function POST(req) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -12,6 +11,7 @@ export async function POST(req) {
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
     );
   }
+  Z;
 
   // Get the headers
   const headerPayload = headers();
@@ -49,10 +49,9 @@ export async function POST(req) {
     });
   }
 
-  // Handle the event
+  //Handle the event
   const eventType = evt?.type;
-
-  if (eventType === "user.created" || eventType === "user.updated") {
+  if (eventType === "User.created" || eventType === "user.updated") {
     const { id, first_name, last_name, image_url, email_addresses, username } =
       evt?.data;
 
@@ -66,28 +65,25 @@ export async function POST(req) {
         username
       );
 
-      return new Response("User is created or updated", {
-        status: 200,
-      });
+      return new Response("User is Created or Updated", { status: 201 });
     } catch (err) {
-      console.error("Error creating or updating user:", err);
-      return new Response("Error occured", {
+      console.log("Erorr creating or updating user", err);
+      return new Response("Error Occured", {
         status: 500,
       });
     }
   }
-
   if (eventType === "user.deleted") {
     try {
       const { id } = evt?.data;
       await deleteUser(id);
 
-      return new Response("User is deleted", {
+      return new Response("User Deleted Successfully", {
         status: 200,
       });
     } catch (err) {
-      console.error("Error deleting user:", err);
-      return new Response("Error occured", {
+      console.log("Error deleting user from database", err);
+      return new Response("Failed to Delete User", {
         status: 500,
       });
     }
