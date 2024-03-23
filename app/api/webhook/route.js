@@ -11,7 +11,7 @@ export async function POST(req) {
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
     );
   }
-  Z;
+  
 
   // Get the headers
   const headerPayload = headers();
