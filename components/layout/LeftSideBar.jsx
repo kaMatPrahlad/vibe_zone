@@ -1,19 +1,19 @@
 "use client";
 
-import { SignedIn, UserButton, SignOutButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
+// import { dark } from "@clerk/themes";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Menu from "./Menu";
-import { Logout } from "@mui/icons-material";
-// import Loader from "../Loader";
+import { useEffect, useState } from "react";
+import Loader from "../Loader";
 
 const LeftSideBar = () => {
-  // const { user, isLoaded } = useUser();
+  const { user, isLoaded } = useUser();
 
   const [loading, setLoading] = useState(true);
 
-  // const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({});
 
   const getUser = async () => {
     const response = await fetch(`/api/user/${user.id}`);
@@ -36,34 +36,37 @@ const LeftSideBar = () => {
 
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 items-center text-light-1">
-          <Link href="/">
+          <Link href={`/profile/${userData._id}/posts`}>
             <Image
-              src="/assets/phucmai.png"
+              src={userData?.profilePhoto}
               alt="profile photo"
               width={50}
               height={50}
               className="rounded-full"
             />
           </Link>
-          <p className="text-small-bold">Phuc Mai</p>
+          <p className="text-small-bold">
+            {userData?.firstName} {userData?.lastName}
+          </p>
         </div>
         <div className="flex text-light-1 justify-between">
           <div className="flex flex-col items-center">
-            <p className="text-base-bold">1</p>
+            <p className="text-base-bold">{userData?.posts?.length}</p>
             <p className="text-tiny-medium">Posts</p>
           </div>
           <div className="flex flex-col items-center">
-            <p className="text-base-bold">1</p>
+            <p className="text-base-bold">{userData?.followers?.length}</p>
             <p className="text-tiny-medium">Followers</p>
           </div>
           <div className="flex flex-col items-center">
-            <p className="text-base-bold">1</p>
+            <p className="text-base-bold">{userData?.following?.length}</p>
             <p className="text-tiny-medium">Following</p>
           </div>
         </div>
       </div>
 
       <hr />
+
       <Menu />
 
       <hr />
@@ -72,15 +75,6 @@ const LeftSideBar = () => {
         <UserButton afterSignOutUrl="/sign-in" />
         <p className="text-light-1 text-body-bold">Manage Account</p>
       </div>
-      <SignedIn>
-        <SignOutButton>
-          <div className="flex cursor-pointer items-center">
-            <Logout sx={{ color: "white", fontSize: "32px" }} />
-            <p className="text-body-bold text-light-1">Log Out</p>
-          </div>
-        </SignOutButton>
-      </SignedIn>
-
     </div>
   );
 };
